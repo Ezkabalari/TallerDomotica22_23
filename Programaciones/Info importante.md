@@ -15,7 +15,7 @@ Serial.write(0xff);
 Serial.write(0xff);
 
 Si queremos cambiar el fondo según el valor del sensor:
-if (valor_sensor >= valor medio){
+if (valor_sensor >= valor_medio){
   Serial.print ("menu.pic=0");
   Serial.write(0xff);
   Serial.write(0xff);
