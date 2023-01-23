@@ -3,3 +3,6 @@
 
 Sketches y scripts del taller de domótica dado en Civivox Mendillorri de Octubre 2022 a Febrero 2023. Para la creación de una maqueta de una casa inteligente.
 Tambien se añade una carpeta para recrear la Funcionalidad de la pantalla de control en una pagina web alojada en una raspberry pi.
+
+# Enlaces Interesantes
+* Controlar un motor de pasos https://github.com/cv47522/nodejs-j5-arduino-stepper
