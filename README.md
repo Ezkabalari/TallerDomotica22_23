@@ -5,4 +5,5 @@ Sketches y scripts del taller de domótica dado en Civivox Mendillorri de Octubr
 Tambien se añade una carpeta para recrear la Funcionalidad de la pantalla de control en una pagina web alojada en una raspberry pi.
 
 # Enlaces Interesantes
-* Controlar un motor de pasos https://github.com/cv47522/nodejs-j5-arduino-stepper
+* Controlar un motor de pasos: https://github.com/cv47522/nodejs-j5-arduino-stepper
+* Plataforma para controlar Placas como arduino desde una web con Javascript: https://johnny-five.io/
