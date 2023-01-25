@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+    <head>
+
+        <title>Casa Inteligente Taller Domotica UI <p>version 1.0</p></title>
+        
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js'></script>
+
+    </head>
+    <body>
+
+        <h1>Communicating from Node.js to an Arduino</h1>
+
+        <button id="Encender LED rojo">Encender LED rojo</button>
+        <button id="Apagar LED rojo">Apagar LED rojo</button>
+        <button id="Encender LED amarillo">Encender LED amarillo</button>
+        <button id="Apagar LED amarillo">Apagar LED amarillo</button>
+        <button id="Encender LED verde">Encender LED verde</button>
+        <button id="Apagar LED verde">Apagar LED verde</button>
+
+        <script>
+            
+        var socket = io();
+
+        document.getElementById('Encender LED rojo').onclick = function() {
+            
+            socket.emit('lights', { "status":"1" });
+                
+        };
+            
+        document.getElementById('Red light Off').onclick = function(){
+               
+            socket.emit('lights2', { "status":"0" });
+            
+        };
+        document.getElementById('Encender LED amarillo').onclick = function() {
+            
+            socket.emit('lights', { "status":"3" });
+                
+        };
+            
+        document.getElementById('Apagar LED amarillo').onclick = function(){
+               
+            socket.emit('lights', { "status":"2" });
+            
+        };
+        document.getElementById('Encender LED verde').onclick = function() {
+            
+            socket.emit('lights', { "status":"5" });
+                
+        };
+            
+        document.getElementById('Apagar LED verde').onclick = function(){
+               
+            socket.emit('lights', { "status":"4" });
+            
+        };
+        </script>
+        
+    </body>
+</html>
+
