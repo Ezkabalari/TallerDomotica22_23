@@ -23,6 +23,40 @@
  * D13: Bomba de agua de la tierra            (Bomba de agua de 12v)
  */
 
+/* 
+DATOS MANDADOS DE NEXTION A ARDUINO
+
+NAME     |  ON    |  OFF   |  description
+=====================================================
+lall     |  100   |  101   |  luces de toda la casa
+l1h      |  102   |  103   |  luces habitación 1
+lwc      |  104   |  105   |  luces baño
+llav     |  106   |  107   |  luces lavadora
+lh2      |  108   |  109   |  luces habitación 2
+lco      |  110   |  111   |  luces cocina
+lpas     |  112   |  113   |  luces pasillo
+lgym     |  114   |  115   |  luces gimnasio
+lsal     |  116   |  117   |  luces salón
+bal      |  1     |  2     |  botón alarma
+bven     |  200   |        |  botón ventilador
+bag      |  201   |        |  botón agua
+bpu      |  202   |        |  botón puerta
+
+
+
+DATOS MANDADOS DE ARDUINO A NEXTION
+variable |    sensor   | lugar
+=======================================
+stem     | temperatura | habitación 1
+sgas     |     gas     | cocina
+ssum     |   humedad   | jardín
+spir     |  movimiento | pasillo
+sldr     |     LDR     | menú
+sppal    |     LDR     | puerta principal
+
+*/
+
+
 // LIBRERÍAS
 #include <Servo.h>
 
@@ -87,46 +121,3 @@ void loop() {
   Serial.write(0xff);
 
 }
-
-
-
-    Serial.print ("prueba.val=");
-    Serial.print (Value);
-    Serial.write(0xff);
-    Serial.write(0xff);
-    Serial.write(0xff);
-    if (Value < 500){
-      Serial.print ("menu.pic=1");
-      Serial.write(0xff);
-      Serial.write(0xff);
-      Serial.write(0xff);
-    }
-    if (Value > 500){
-      Serial.print ("menu.pic=0");
-      Serial.write(0xff);
-      Serial.write(0xff);
-      Serial.write(0xff);
-    }
-    delay (1000);
-
-}
-
-/*
-Habitación 1: lh1 luz stem temperatura
-
-Baño: lwc luz bven ventilador
-
-Lavadora: llav luz
-
-Habitación 2: lh2 luz
-
-Cocina: lco luz sgas sensor gas
-
-Jardin: pic2 fondo ljar luz bag agua shum sensor humedad
-
-Pasillo: lpas luz bal alarma bpu puerta
-
-Gym: lgym luz
-
-Salon: lsal luz
-*/
