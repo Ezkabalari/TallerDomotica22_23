@@ -74,24 +74,22 @@ void setup() {
 }
 
 void loop() {
-  int Vsgas = analogRead (sensor_gas);
-    Serial.print ("prueba.val=");
-    Serial.print (Value);
-    Serial.write(0xff);
-    Serial.write(0xff);
-    Serial.write(0xff);
+  int Vstem = analogRead (sensor_temperatura);    //Definimos una variable a la cual asignamos el valor de lectura del sensor de temperatura
+  int Vspir = analogRead (sensor_PIR);            //Definimos una variable a la cual asignamos el valor de lectura del sensor de movimiento
+  int Vsldr = analogRead (sensor_luz);            //Definimos una variable a la cual asignamos el valor de lectura del sensor de luz exterior
+  int Vsgar = analogRead (sensor_garaje);         //Definimos una variable a la cual asignamos el valor de lectura del sensor de luz entrada
+  int Vshum = analogRead (sensor_tierra);         //Definimos una variable a la cual asignamos el valor de lectura del sensor de humedad del suelo
+  int Vsgas = analogRead (sensor_gas);            //Definimos una variable a la cual asignamos el valor de lectura del sensor de gas
+  Serial.print ("stem.val=");
+  Serial.print (Vstem);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  Serial.write(0xff);
 
 }
 
 
 
-void setup() {
-  Serial.begin(9600);
-  pinMode (A5, INPUT);
-}
-
-void loop() {
-    int Value = analogRead (A5);
     Serial.print ("prueba.val=");
     Serial.print (Value);
     Serial.write(0xff);
