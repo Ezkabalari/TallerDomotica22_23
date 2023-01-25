@@ -29,7 +29,7 @@ DATOS MANDADOS DE NEXTION A ARDUINO
 NAME     |  ON    |  OFF   |  description
 =====================================================
 lall     |  100   |  101   |  luces de toda la casa
-l1h      |  102   |  103   |  luces habitación 1
+lh2      |  102   |  103   |  luces habitación 1
 lwc      |  104   |  105   |  luces baño
 llav     |  106   |  107   |  luces lavadora
 lh2      |  108   |  109   |  luces habitación 2
