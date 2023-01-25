@@ -23,6 +23,40 @@
  * D13: Bomba de agua de la tierra            (Bomba de agua de 12v)
  */
 
+/* 
+DATOS MANDADOS DE NEXTION A ARDUINO
+
+NAME     |  ON    |  OFF   |  description
+=====================================================
+lall     |  100   |  101   |  luces de toda la casa
+l1h      |  102   |  103   |  luces habitación 1
+lwc      |  104   |  105   |  luces baño
+llav     |  106   |  107   |  luces lavadora
+lh2      |  108   |  109   |  luces habitación 2
+lco      |  110   |  111   |  luces cocina
+lpas     |  112   |  113   |  luces pasillo
+lgym     |  114   |  115   |  luces gimnasio
+lsal     |  116   |  117   |  luces salón
+bal      |  1     |  2     |  botón alarma
+bven     |  200   |        |  botón ventilador
+bag      |  201   |        |  botón agua
+bpu      |  202   |        |  botón puerta
+
+
+
+DATOS MANDADOS DE ARDUINO A NEXTION
+variable |    sensor   | lugar
+=======================================
+stem     | temperatura | habitación 1
+sgas     |     gas     | cocina
+ssum     |   humedad   | jardín
+spir     |  movimiento | pasillo
+sldr     |     LDR     | menú
+sppal    |     LDR     | puerta principal
+
+*/
+
+
 // LIBRERÍAS
 #include <Servo.h>
 
@@ -74,6 +108,16 @@ void setup() {
 }
 
 void loop() {
-  
+  int Vstem = analogRead (sensor_temperatura);    //Definimos una variable a la cual asignamos el valor de lectura del sensor de temperatura
+  int Vspir = analogRead (sensor_PIR);            //Definimos una variable a la cual asignamos el valor de lectura del sensor de movimiento
+  int Vsldr = analogRead (sensor_luz);            //Definimos una variable a la cual asignamos el valor de lectura del sensor de luz exterior
+  int Vsgar = analogRead (sensor_garaje);         //Definimos una variable a la cual asignamos el valor de lectura del sensor de luz entrada
+  int Vshum = analogRead (sensor_tierra);         //Definimos una variable a la cual asignamos el valor de lectura del sensor de humedad del suelo
+  int Vsgas = analogRead (sensor_gas);            //Definimos una variable a la cual asignamos el valor de lectura del sensor de gas
+  Serial.print ("stem.val=");
+  Serial.print (Vstem);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  Serial.write(0xff);
 
 }
