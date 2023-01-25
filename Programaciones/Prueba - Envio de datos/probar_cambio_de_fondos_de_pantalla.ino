@@ -26,3 +26,23 @@ void loop() {
     delay (1000);
 
 }
+
+*/
+Habitación 1: lh1 luz stem temperatura
+
+Baño: lwc luz bven ventilador
+
+Lavadora: llav luz
+
+Habitación 2: lh2 luz
+
+Cocina: lco luz sgas sensor gas
+
+Jardin: pic2 fondo ljar luz bag agua shum sensor humedad
+
+Pasillo: lpas luz bal alarma bpu puerta
+
+Gym: lgym luz
+
+Salon: lsal luz
+/*
