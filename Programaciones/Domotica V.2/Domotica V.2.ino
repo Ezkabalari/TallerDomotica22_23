@@ -5,8 +5,8 @@
  * A1: Sensor de humedad de la tierra         (Higrometro V1.2)
  * A2: Sensor de luz para garaje              (KY-018)
  * A3: Sensor de luz para exterior            (KY-018)
- * A4: Sensor de presencia del pasillo        (HC-SR505)
- * A5: Sensor de temperatura de habitación 1  (LM35)
+ * A4: Sensor de temperatura de habitación 1  (LM35)
+ * A5: ///////////////////////////////////////////////////////////////////////////////////////////////
  * D0: Nextion cable azul                     (Nextion NX8048T050)
  * D1: Nextion cable amarillo                 (Nextion NX8048T050)
  * D2: Leds Habitación 1                      (Led amarillo 5mm)
@@ -17,7 +17,7 @@
  * D7: Leds Cocina                            (Led amarillo 5mm)
  * D8: Leds Salón                             (Led amarillo 5mm)
  * D9: Leds Gimnasio                          (Led amarillo 5mm)
- * D10: ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ * D10: Sensor de presencia del pasillo       (HC-SR505)
  * D11: Servomotor de la puerta principal     (SG-90)
  * D12: Ventilador de la habitación 1         (Noctua NF-A4x10)
  * D13: Bomba de agua de la tierra            (Bomba de agua de 12v)
@@ -37,10 +37,10 @@ lco      |  110   |  111   |  luces cocina
 lpas     |  112   |  113   |  luces pasillo
 lgym     |  114   |  115   |  luces gimnasio
 lsal     |  116   |  117   |  luces salón
-bal      |   1    |   2    |  botón alarma
 bven     |  200   |        |  botón ventilador
 bag      |  201   |        |  botón agua
 bpu      |  202   |        |  botón puerta
+bal      |  203   |  204   |  botón alarma
 
 
 
@@ -63,7 +63,7 @@ sppal    |     LDR     | puerta principal
 int rele_bomba = 13;                              //Configuramos la salida digital 13 para el relé que controla la bomba de agua
 int rele_ventilador = 12;                         //Configuramos la salida digital 12 para el relé que controla el ventilador
 Servo puerta_principal;                           //Los servos se configuran en el void setup
-//////////////////////////////////////////////////////////////////////////SALIDA 10 DISPONIBLE//////////////////////////////////////////////////////////////////////////
+int sensor_PIR = 10;                              //Configuramos la entrada digital 4 para el sensor de movimiento
 int led_gimnasio = 9;                             //Configuramos la salida digital 9 para la luz del gimnasio
 int led_salon = 8;                                //Configuramos la salida digital 8 para la luz del salón
 int led_cocina = 7;                               //Configuramos la salida digital 7 para la luz de la cocina
@@ -74,13 +74,13 @@ int led_wc = 3;                                   //Configuramos la salida digit
 int led_hab1 = 2;                                 //Configuramos la salida digital 2 para la luz de la habitación 1
 // Pin 1 reservado para Nextion                   //Arduino trae por defecto éste pin para la transmisión de datos
 // Pin 0 reservado para Nextion                   //Arduino trae por defecto éste pin para la recepción de datos
-int sensor_temperatura = A5;                      //Configuramos la entrada analógica 5 para el sensor de temperatura
-int sensor_PIR = A4;                              //Configuramos la entrada analógica 4 para el sensor de movimiento
+int sensor_temperatura = A4;                      //Configuramos la entrada analógica 4 para el sensor de temperatura
 int sensor_luz = A3;                              //Configuramos la entrada analógica 3 para el sensor de luz
 int sensor_puerta = A2;                           //Configuramos la entrada analógica 2 para el sensor de luz
 int sensor_tierra = A1;                           //Configuramos la entrada analógica 1 para el sensor de humedad
 int sensor_gas = A0;                              //Configuramos la entrada analógica 0 para el sensor de gas
 
+int Valarma = 0;
 
 void setup() {
   Serial.begin (9600);                            //Iniciamos la comunicación serial a 9600 baudios para la comunicación con la pantalla Nextion
@@ -101,6 +101,17 @@ void setup() {
   pinMode (sensor_puerta, INPUT);                 //Definimos como ENTRADA el pin conectado al sensor de luz de la puerta principal
   pinMode (sensor_tierra, INPUT);                 //Definimos como ENTRADA el pin conectado al sensor de humedad de la tierra
   pinMode (sensor_gas, INPUT);                    //Definimos como ENTRADA el pin conectado al sensor de gases
+
+
+  puerta_principal.write(0);                      //Movemos el servomotor a su posición inicial
+  digitalWrite (led_gimnasio, LOW);               //Apagamos los leds del gimnasio
+  digitalWrite (led_salon, LOW);                  //Apagamos los leds del salón
+  digitalWrite (led_cocina, LOW);                 //Apagamos los leds de la cocina
+  digitalWrite (led_pasillo, LOW);                //Apagamos los leds del pasillo
+  digitalWrite (led_hab2, LOW);                   //Apagamos los leds de la habitación 2
+  digitalWrite (led_lavadora, LOW);               //Apagamos los leds del cuarto de la lavadora
+  digitalWrite (led_wc, LOW);                     //Apagamos los leds del baño
+  digitalWrite (led_hab1, LOW);                   //Apagamos los leds de la habitación 1
   
 }
 
@@ -111,7 +122,10 @@ void loop() {
   int Vsppal = analogRead (sensor_puerta);        //Definimos una variable a la cual asignamos el valor de lectura del sensor de luz entrada
   int Vshum = analogRead (sensor_tierra);         //Definimos una variable a la cual asignamos el valor de lectura del sensor de humedad del suelo
   int Vsgas = analogRead (sensor_gas);            //Definimos una variable a la cual asignamos el valor de lectura del sensor de gas
-
+  int milivoltios = (Vstem / 1023.0) * 5000;
+  int Vstemm = (milivoltios / 10);
+  int Vdalarma = digitalRead (sensor_PIR);
+  int estado_pir = LOW;
   
   String lectura = Serial.readString();           //Definimos la variable lectura que será con la cual recogeremos el valor de la pantalla
   
@@ -183,11 +197,96 @@ void loop() {
   if (int(lectura[0]) == 117){
       digitalWrite (led_salon, LOW);              //Apagamos los leds del salón
     }
-  
+  if (int(lectura[0]) == 200){
+      digitalWrite (rele_ventilador, HIGH);       //Encendemos el relé del ventilador
+      delay (5000);
+      digitalWrite (rele_ventilador, LOW);        //Apagamos el relé del ventilador
+    }
+  if (int(lectura[0]) == 201){
+      digitalWrite (rele_bomba, HIGH);            //Encendemos el relé de la bomba de agua
+      delay (5000);
+      digitalWrite (rele_bomba, LOW);             //Apagamos el relé de la bomba de agua
+    }   
+  if (int(lectura[0]) == 202){
+      puerta_principal.write(90);                 //Movemos el servomotor a su posición abierta
+      delay (2500);
+      puerta_principal.write(0);                  //Movemos el servomotor a su posición cerrada
+    }
+  if (int(lectura[0]) == 203){
+      Valarma = 1;                                //Asignamos un 1 al estado de la alarma
+    }
+  if (int(lectura[0]) == 204){
+      Valarma = 0;                                //Asignamos un 0 al estado de la alarma
+    }
+  if (Valarma = 1){                               //Si el estado de la alarma es 1, entonces...
+      if (Vdalarma == HIGH){                      //Si el sensor de movimiento detecta movimiento, entonces...
+        digitalWrite (led_gimnasio, HIGH);        //Encendemos los leds del gimnasio
+        digitalWrite (led_salon, HIGH);           //Encendemos los leds del salón
+        digitalWrite (led_cocina, HIGH);          //Encendemos los leds de la cocina
+        digitalWrite (led_pasillo, HIGH);         //Encendemos los leds del pasillo
+        digitalWrite (led_hab2, HIGH);            //Encendemos los leds de la habitación 2
+        digitalWrite (led_lavadora, HIGH);        //Encendemos los leds del cuarto de la lavadora
+        digitalWrite (led_wc, HIGH);              //Encendemos los leds del baño
+        digitalWrite (led_hab1, HIGH);            //Encendemos los leds de la habitación 1
+        delay (100);                              //Espera de 0,1s para hacer parpadeo
+        digitalWrite (led_gimnasio, LOW);         //Apagamos los leds del gimnasio
+        digitalWrite (led_salon, LOW);            //Apagamos los leds del salón
+        digitalWrite (led_cocina, LOW);           //Apagamos los leds de la cocina
+        digitalWrite (led_pasillo, LOW);          //Apagamos los leds del pasillo
+        digitalWrite (led_hab2, LOW);             //Apagamos los leds de la habitación 2
+        digitalWrite (led_lavadora, LOW);         //Apagamos los leds del cuarto de la lavadora
+        digitalWrite (led_wc, LOW);               //Apagamos los leds del baño
+        digitalWrite (led_hab1, LOW);             //Apagamos los leds de la habitación 1
+        delay (100);                              //Espera de 0,1s para hacer parpadeo
+      }
+      else {                                      //Sino...
+        digitalWrite (led_gimnasio, LOW);         //Apagamos los leds del gimnasio
+        digitalWrite (led_salon, LOW);            //Apagamos los leds del salón
+        digitalWrite (led_cocina, LOW);           //Apagamos los leds de la cocina
+        digitalWrite (led_pasillo, LOW);          //Apagamos los leds del pasillo
+        digitalWrite (led_hab2, LOW);             //Apagamos los leds de la habitación 2
+        digitalWrite (led_lavadora, LOW);         //Apagamos los leds del cuarto de la lavadora
+        digitalWrite (led_wc, LOW);               //Apagamos los leds del baño
+        digitalWrite (led_hab1, LOW);             //Apagamos los leds de la habitación 1
+        }
+    } 
+    if(Vshum < 500)
+    {
+      digitalWrite (rele_bomba, HIGH);
+      delay (5000);
+      digitalWrite (rele_bomba, LOW);
+    }
+    if (Vsppal < 750){
+      puerta_principal.write(90);                 //Movemos el servomotor a su posición abierta
+      delay (2500);
+      puerta_principal.write(0);                  //Movemos el servomotor a su posición cerrada
+    }
+    if (Vsgas < 750){
+      puerta_principal.write(90);                 //Movemos el servomotor a su posición abierta
+      delay (2500);
+      puerta_principal.write(0);                  //Movemos el servomotor a su posición cerrada
+    }
+    if (Vsldr <= 400){
+      Serial.print ("menu.pic=1");
+      Serial.write(0xff);
+      Serial.write(0xff);
+      Serial.write(0xff);
+    }
+    else {
+      Serial.print ("menu.pic=0");
+      Serial.write(0xff);
+      Serial.write(0xff);
+      Serial.write(0xff);
+    }
   delay (2500);
   
   Serial.print ("stem.val=");                     //Enviamos datos del sensor de temperatura a la pantalla
   Serial.print (Vstem);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  Serial.print ("stemm.val=");                    //Enviamos datos del sensor de temperatura (en celsius) a la pantalla
+  Serial.print (Vstemm);
   Serial.write(0xff);
   Serial.write(0xff);
   Serial.write(0xff);
